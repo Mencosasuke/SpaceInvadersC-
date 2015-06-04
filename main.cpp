@@ -518,11 +518,12 @@ int main(int argc, char** argv) {
 				break;
 			case 2:
 				cout<<"\n\nGracias por jugar!"<<endl;
+				Sleep(3000);
 				break;
 			default:
 				cout<<"\n\nIngrese una opcion valida."<<endl;
+				Sleep(3000);
 				break;
 		}
-		system("pause");
 	}while(op != 2);
 }
