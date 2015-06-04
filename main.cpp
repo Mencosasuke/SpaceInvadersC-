@@ -15,7 +15,7 @@ const int IDENTIFICADOR_MISIL = 4;			// 4 -> misil (")
 
 void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	
-	int vidas = 10;
+	int vidas = 3;
 	bool primeraFila = true;
 	int valorRandom = 0;
 	bool primerRecorrido = true;
@@ -24,17 +24,16 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	string acc = "";
 	//Nodo *auxV = (*cabecera)->abajo;
 	//Nodo *auxH = auxV->derecha;
-	Nodo *auxV = NULL;
-	Nodo *auxH = NULL;
+	Nodo *auxV = (*cabecera)->abajo;
+	Nodo *auxH = auxV->derecha;
 	
-	Nodo *nave = NULL;
+	Nodo *nave = new Nodo();
 	
 	// ----------------- DESDE ESTE MOMENTO INICIA EL BUCLE -----------------
 	do{
+		//system("cls");
 		//auxV = (*cabecera)->abajo;
 		//auxH = auxV->derecha;
-		auxV = (*cabecera)->abajo;
-		auxH = auxV->derecha;
 		
 		//while(auxV != NULL){
 			//while(auxH != NULL){
@@ -62,6 +61,8 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 										auxH->abajo->valor = IDENTIFICADOR_ALIEN;
 										vidas --;
 										// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
+										nave->valor = IDENTIFICADOR_TERRICOLA;
+										
 									}
 								}else{
 									auxH->valor = IDENTIFICADOR_VACIO;
@@ -82,6 +83,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 										auxH->abajo->valor = IDENTIFICADOR_VACIO;
 										vidas --;
 										// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
+										nave->valor = IDENTIFICADOR_TERRICOLA;
 									}
 								}else{
 									auxH->valor = IDENTIFICADOR_VACIO;
@@ -137,16 +139,14 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 					
 					// Si es la nave terrícola, pregunta si se mueve o si desea disparar
 					if(auxH->valor == IDENTIFICADOR_TERRICOLA){
-						nave = auxH;
 						do{
 							do{
-								system("cls");
+								//system("cls");
 								cout<<"Desea moverse o disparar? [M/D] [ ]\b\b";
 								cin>>acc;
 								cin.ignore();
 								if(acc != "m" && acc != "M" && acc != "d" && acc != "D"){
-									cout<<"Ingrese una opcion correcta";
-									Sleep(3000);
+									cout<<endl<<"Ingrese una opcion correcta"<<endl;
 								}else{
 									movimientoValido = true;
 								}
@@ -154,55 +154,62 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 							movimientoValido = false;
 							
 							if(acc == "m" || acc == "M"){
-								system("cls");
+								//system("cls");
 								cout<<"Hacia done desea moverse? [I/D] [ ]\b\b";
 								cin>>dir;
 								cin.ignore();
 								// Si la nave se puede mover a la izquierda: si el nodo a la izquierda esta vacío, la nave se mueve
 								// Si el nodo a la izquierda tiene un alien o bomba, desaparecen ambos elementos y pierde una vida.
 								if(dir == "i" || dir == "I"){
-									if(nave->izquierda != NULL){
-										if(nave->izquierda->valor != 100){
-											if(nave->izquierda->valor == IDENTIFICADOR_VACIO){
+									if(auxH->izquierda != NULL){
+										if(auxH->izquierda->valor != 100){
+											if(auxH->izquierda->valor == IDENTIFICADOR_VACIO){
 												movimientoValido = true;
-												nave->izquierda->valor = nave->valor;
-												nave->valor = IDENTIFICADOR_VACIO;
-											}else if(nave->izquierda->valor == IDENTIFICADOR_BOMBA || nave->izquierda->valor == IDENTIFICADOR_ALIEN){
+												auxH->izquierda->valor = IDENTIFICADOR_TERRICOLA;
+												auxH->valor = IDENTIFICADOR_VACIO;
+											}else if(auxH->izquierda->valor == IDENTIFICADOR_BOMBA || auxH->izquierda->valor == IDENTIFICADOR_ALIEN){
 												movimientoValido = true;
-												nave->izquierda->valor = IDENTIFICADOR_VACIO;
-												nave->valor = IDENTIFICADOR_VACIO;
+												auxH->izquierda->valor = IDENTIFICADOR_VACIO;
+												auxH->valor = IDENTIFICADOR_VACIO;
 												vidas --;
 												// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
+												nave->valor = IDENTIFICADOR_TERRICOLA;
 											}
 										}
 									}
 								// Si la nave se puede mover a la derecha: si el nodo a la derecha esta vacío, la nave se mueve con estado 1
 								// Si el nodo a la derecha tiene un alien o bomba, desaparecen ambos elementos y pierde una vida.
 								}else if(dir == "d" || dir == "D"){
-									if(nave->derecha != NULL){
-										if(nave->derecha->valor == IDENTIFICADOR_VACIO){
+									if(auxH->derecha != NULL){
+										if(auxH->derecha->valor == IDENTIFICADOR_VACIO){
 											movimientoValido = true;
-											nave->derecha->valor = nave->valor;
-											nave->valor = IDENTIFICADOR_VACIO;
-											nave->estado = 1;
-										}else if(nave->derecha->valor == IDENTIFICADOR_ALIEN || nave->derecha->valor == IDENTIFICADOR_BOMBA){
+											auxH->derecha->valor = IDENTIFICADOR_TERRICOLA;
+											auxH->valor = IDENTIFICADOR_VACIO;
+											auxH->derecha->estado = 1;
+										}else if(auxH->derecha->valor == IDENTIFICADOR_ALIEN || auxH->derecha->valor == IDENTIFICADOR_BOMBA){
 											movimientoValido = true;
-											nave->derecha->valor = IDENTIFICADOR_VACIO;
-											nave->valor = IDENTIFICADOR_VACIO;
+											auxH->derecha->valor = IDENTIFICADOR_VACIO;
+											auxH->valor = IDENTIFICADOR_VACIO;
 											vidas --;
 											// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
+											nave->valor = IDENTIFICADOR_TERRICOLA;
 										}
 									}
 								}else{
-									cout<<"Ingrese una opcion correcta";
-									Sleep(3000);
+									cout<<endl<<"Ingrese una opcion correcta"<<endl;
+									//Sleep(3000);
 								}
 							}else if(acc == "d" || acc == "D"){
-								
+								if(auxH->arriba->valor == IDENTIFICADOR_ALIEN || auxH->arriba->valor == IDENTIFICADOR_BOMBA){
+									auxH->arriba->valor = IDENTIFICADOR_VACIO;
+								}else if(auxH->arriba->valor == IDENTIFICADOR_VACIO){
+									auxH->arriba->valor = IDENTIFICADOR_MISIL;
+								}
+								movimientoValido = true;
 							}
 						}while(!movimientoValido);
 						movimientoValido = false;
-					}					
+					}
 				}else{
 					auxH->estado = 0;
 				}
@@ -231,7 +238,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 				}
 				
 				// Imprime el valor del nodo
-				switch(auxH->valor){
+				/*switch(auxH->valor){
 					case IDENTIFICADOR_VACIO:
 						cout<<" _ ";
 						break;
@@ -247,16 +254,17 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 					case IDENTIFICADOR_MISIL:
 						cout<<" \" ";
 						break;
-				}
+				}*/
 				auxH = auxH->derecha;
-				Sleep(200);
+				//Sleep(200);
 			}
 			primeraFila = false;
-			cout<<endl<<endl;
 			auxV = auxV->abajo;
 			if(auxV != NULL){
 				auxH = auxV->derecha;
 			}
+			
+				//cout<<endl<<endl;
 		}
 		/*do{
 			cout<<"Hacia done desea moverse? [I/D] [ ]\b\b";
@@ -279,14 +287,50 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 			}
 		}while(!movimientoValido);*/
 		
-		vidas--;
 		primeraFila = true;
 		primerRecorrido = false;
-		cout<<endl<<endl;
-		system("pause");
-		system("cls");
+		
+		auxV = (*cabecera)->abajo;
+		auxH = auxV->derecha;
+		
+		//system("cls");
+		while(auxV != NULL){
+			while(auxH != NULL){
+				switch(auxH->valor){
+					case IDENTIFICADOR_VACIO:
+						cout<<"   ";
+						break;
+					case IDENTIFICADOR_TERRICOLA:
+						cout<<" ^ ";
+						break;
+					case IDENTIFICADOR_ALIEN:
+						cout<<" # ";
+						break;
+					case IDENTIFICADOR_BOMBA:
+						cout<<" * ";
+						break;
+					case IDENTIFICADOR_MISIL:
+						cout<<" \" ";
+						break;
+				}
+				auxH = auxH->derecha;
+			}
+			cout<<endl<<endl;
+			auxV = auxV->abajo;
+			if(auxV != NULL){
+				auxH = auxV->derecha;	
+			}
+		}
+		
+		auxV = (*cabecera)->abajo;
+		auxH = auxV->derecha;
+		
 	}while(vidas > 0);
 	// ----------------- ACÁ TERMINA EL BLUCLE DEL JUEGO -----------------
+	
+	system("cls");
+	cout<<"************************* GAME OVER *************************";
+	Sleep(3000);
 }
 
 void crearLista(int nf, int nc){
