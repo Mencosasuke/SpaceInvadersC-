@@ -216,16 +216,13 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 				
 				// Solo se insertaran naves si es la primer fila
 				if(primeraFila){
-					valorRandom = rand() % 2;
+					valorRandom = rand() % 20;
 					// Inserta un alien solo si la casilla está vacia
 					if(auxH->valor == IDENTIFICADOR_VACIO){
-						switch(valorRandom){
-							case 0:
-								auxH->valor = IDENTIFICADOR_VACIO;
-								break;
-							case 1:
-								auxH->valor = IDENTIFICADOR_ALIEN;
-								break;
+						if(valorRandom > 5){
+							auxH->valor = IDENTIFICADOR_VACIO;
+						}else{
+							auxH->valor = IDENTIFICADOR_ALIEN;
 						}
 					}
 				}
