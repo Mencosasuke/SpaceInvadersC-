@@ -37,59 +37,65 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		
 		//while(auxV != NULL){
 			//while(auxH != NULL){
+		srand(time(0));
 		for(int i = 0; i < nf ; i++){
-			srand(time(0));
 			for(int j = 0; j < nc ; j++){
 				
 				// Si el nodo ya realizó alguna acción, solo setea su valor a 0 y sigue con el siguiente nodo
 				if(auxH->estado == 0){
 					// Decide si el alien debe bajar o soltar una bomba
 					if(auxH->valor == IDENTIFICADOR_ALIEN){
-						valorRandom = rand() % 2;
-						switch(valorRandom){
-							// En caso sea 0, el alien bajara al nodo inferior
-							case 0:
-								// Verifica si el nodo inferior existe y esta vacio, solo si no está vacío, verifica si la nave terrícola
-								// se encuentra en ese nodo y de ser así, se le resta una vida. Si está vacio, el alien desaparece.
-								if(auxH->abajo != NULL){
-									if(auxH->abajo->valor == IDENTIFICADOR_VACIO){
-										auxH->abajo->valor = IDENTIFICADOR_ALIEN;
-										auxH->valor = IDENTIFICADOR_VACIO;
-										auxH->estado = 1;
-									}else if(auxH->abajo->valor == IDENTIFICADOR_TERRICOLA){
-										auxH->valor = IDENTIFICADOR_VACIO;
-										auxH->abajo->valor = IDENTIFICADOR_ALIEN;
-										vidas --;
-										// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
-										nave->valor = IDENTIFICADOR_TERRICOLA;
-										
-									}
-								}else{
+						
+						valorRandom = rand() % 25;
+						
+						// En caso sea 0, el alien bajara al nodo inferior
+						if(valorRandom < 5){
+							// Verifica si el nodo inferior existe y esta vacio, solo si no está vacío, verifica si la nave terrícola
+							// se encuentra en ese nodo y de ser así, se le resta una vida. Si está vacio, el alien desaparece.
+							if(auxH->abajo != NULL){
+								if(auxH->abajo->valor == IDENTIFICADOR_VACIO){
+									auxH->abajo->valor = IDENTIFICADOR_ALIEN;
 									auxH->valor = IDENTIFICADOR_VACIO;
-								}
-								break;
-							// En caso sea 1, el alien soltará una bomba
-							case 1:
-								if(auxH->abajo != NULL){
-									// Si abajo no existe un alien ni una bomba, entonces suelta la bomba.
-									// Si abajo hay un misil, ambos proyectiles desaparecen.
-									// Si abajo está el terrícola, pierde una vida.
-									if(auxH->abajo->valor == IDENTIFICADOR_VACIO){
-										auxH->abajo->valor = IDENTIFICADOR_BOMBA;
-										auxH->abajo->estado = 1;
-									}else if(auxH->abajo->valor == IDENTIFICADOR_MISIL){
-										auxH->abajo->valor = IDENTIFICADOR_VACIO;
-									}else if(auxH->abajo->valor == IDENTIFICADOR_TERRICOLA){
-										auxH->abajo->valor = IDENTIFICADOR_VACIO;
-										vidas --;
-										// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
-										nave->valor = IDENTIFICADOR_TERRICOLA;
-									}
-								}else{
+									auxH->estado = 1;
+								}else if(auxH->abajo->valor == IDENTIFICADOR_TERRICOLA){
 									auxH->valor = IDENTIFICADOR_VACIO;
+									//auxH->abajo->valor = IDENTIFICADOR_ALIEN;
+									vidas --;
+									// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
+									//nave->valor = IDENTIFICADOR_TERRICOLA;
+									cout<<"PIERDES UNA VIDA: x"<<vidas<<endl;
+									Sleep(1000);
+									
 								}
-								break;
+							}else{
+								auxH->valor = IDENTIFICADOR_VACIO;
+							}
 						}
+						
+						// En caso sea 1, el alien soltará una bomba
+						if(valorRandom > 4 && valorRandom < 10){
+							if(auxH->abajo != NULL){
+								
+								// Si abajo no existe un alien ni una bomba, entonces suelta la bomba.
+								// Si abajo hay un misil, ambos proyectiles desaparecen.
+								// Si abajo está el terrícola, pierde una vida.
+								if(auxH->abajo->valor == IDENTIFICADOR_VACIO){
+									auxH->abajo->valor = IDENTIFICADOR_BOMBA;
+									auxH->abajo->estado = 1;
+								}else if(auxH->abajo->valor == IDENTIFICADOR_MISIL){
+									auxH->abajo->valor = IDENTIFICADOR_VACIO;
+								}else if(auxH->abajo->valor == IDENTIFICADOR_TERRICOLA){
+									//auxH->abajo->valor = IDENTIFICADOR_VACIO;
+									vidas --;
+									// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
+									//nave->valor = IDENTIFICADOR_TERRICOLA;
+									cout<<"PIERDES UNA VIDA: x"<<vidas<<endl;
+									Sleep(1000);
+								}
+							}else{
+								auxH->valor = IDENTIFICADOR_VACIO;
+							}
+						}	
 					}
 					
 					// Si es una bomba, si la bomba no se acaba de mover, se moverá al nodo de abajo.
@@ -103,8 +109,13 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 							
 							// Si es la nave terrícola, la nave desaparece y pierde una vida.
 							if(auxH->abajo->valor == IDENTIFICADOR_TERRICOLA){
-								auxH->abajo->valor = IDENTIFICADOR_VACIO;
+								//auxH->abajo->valor = IDENTIFICADOR_VACIO;
 								auxH->valor = IDENTIFICADOR_VACIO;
+								vidas --;
+								// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
+								//nave->valor = IDENTIFICADOR_TERRICOLA;
+								cout<<"PIERDES UNA VIDA: x"<<vidas<<endl;
+								Sleep(1000);
 							}
 							
 							// Si es un espacio vacío, la bomba baja y se cambia el estado a 1.
@@ -120,7 +131,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 					
 					// Si es un misil, si el misil no se acaba de mover, se moverá hacia arriba.
 					if(auxH->valor == IDENTIFICADOR_MISIL){
-						if(auxH->arriba != NULL){
+						if(auxH->arriba->valor != 100){
 							// Si arriba hay un alien o una bomba, el misil y el objetivo desaparecen.
 							if(auxH->arriba->valor == IDENTIFICADOR_BOMBA || auxH->arriba->valor == IDENTIFICADOR_ALIEN){
 								auxH->arriba->valor = IDENTIFICADOR_VACIO;
@@ -170,10 +181,12 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 											}else if(auxH->izquierda->valor == IDENTIFICADOR_BOMBA || auxH->izquierda->valor == IDENTIFICADOR_ALIEN){
 												movimientoValido = true;
 												auxH->izquierda->valor = IDENTIFICADOR_VACIO;
-												auxH->valor = IDENTIFICADOR_VACIO;
+												//auxH->valor = IDENTIFICADOR_VACIO;
 												vidas --;
 												// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
-												nave->valor = IDENTIFICADOR_TERRICOLA;
+												//nave->valor = IDENTIFICADOR_TERRICOLA;
+												cout<<"PIERDES UNA VIDA: x"<<vidas<<endl;
+												Sleep(1000);
 											}
 										}
 									}
@@ -189,16 +202,19 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 										}else if(auxH->derecha->valor == IDENTIFICADOR_ALIEN || auxH->derecha->valor == IDENTIFICADOR_BOMBA){
 											movimientoValido = true;
 											auxH->derecha->valor = IDENTIFICADOR_VACIO;
-											auxH->valor = IDENTIFICADOR_VACIO;
+											//auxH->valor = IDENTIFICADOR_VACIO;
 											vidas --;
 											// --------------------------- AQUI SE DEBE REINICIAR LA NAVE TERRICOLA ---------------------------
-											nave->valor = IDENTIFICADOR_TERRICOLA;
+											//nave->valor = IDENTIFICADOR_TERRICOLA;
+											cout<<"PIERDES UNA VIDA: x"<<vidas<<endl;
+											Sleep(1000);
 										}
 									}
 								}else{
 									cout<<endl<<"Ingrese una opcion correcta"<<endl;
 									//Sleep(3000);
 								}
+							// Si la accion es disparar...
 							}else if(acc == "d" || acc == "D"){
 								if(auxH->arriba->valor == IDENTIFICADOR_ALIEN || auxH->arriba->valor == IDENTIFICADOR_BOMBA){
 									auxH->arriba->valor = IDENTIFICADOR_VACIO;
@@ -290,7 +306,7 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 		auxV = (*cabecera)->abajo;
 		auxH = auxV->derecha;
 		
-		//system("cls");
+		system("cls");
 		while(auxV != NULL){
 			while(auxH != NULL){
 				switch(auxH->valor){
@@ -326,7 +342,24 @@ void comenzarJuego(Nodo **cabecera, int nf, int nc){
 	// ----------------- ACÁ TERMINA EL BLUCLE DEL JUEGO -----------------
 	
 	system("cls");
-	cout<<"************************* GAME OVER *************************";
+	cout<<"************************* GAME OVER *************************"<<endl;
+	
+	// Limpia la lista ortogonal para liberar el espacio en memoria
+	
+	Nodo *pDel = (*cabecera);
+	Nodo *temp = NULL;
+	
+	do{
+		while(pDel != NULL)
+		{
+		  temp = pDel->derecha;
+		  delete[] pDel;
+		  pDel = temp;
+		}
+		pDel = auxV;
+		auxV = auxV->abajo;
+	}while(auxV->abajo != NULL);
+	
 	Sleep(3000);
 }
 
